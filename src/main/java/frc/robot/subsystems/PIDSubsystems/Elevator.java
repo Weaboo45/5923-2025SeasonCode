@@ -2,6 +2,7 @@ package frc.robot.subsystems.PIDSubsystems;
 
 import frc.robot.Constants.ShooterConstants;
 
+import org.ejml.ops.FSemiRing;
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.SparkMax;
@@ -12,13 +13,14 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.Rev2mDistanceSensor.RangeProfile;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Elevator extends SubsystemBase {
   //shooter motors
-  private SparkMax topShooterMotor;
+  private SparkMax elevatorMotor;
 
   //relative encoders
   private RelativeEncoder elevatorEncoder;
@@ -33,36 +35,19 @@ public class Elevator extends SubsystemBase {
 
   public Elevator(){
     //motors
-    topShooterMotor = new SparkMax(ShooterConstants.topShooterMotorID, MotorType.kBrushless);
+    elevatorMotor = new SparkMax(ShooterConstants.topShooterMotorID, MotorType.kBrushless);
         
     //encoders
-    elevatorEncoder = topShooterMotor.getEncoder();
+    elevatorEncoder = elevatorMotor.getEncoder();
 
     //PID controller
-    elevatorController = topShooterMotor.getClosedLoopController();
+    elevatorController = elevatorMotor.getClosedLoopController();
 
     SmartDashboard.putNumber("Setpoint (m)", distSetpoint);
 
-    configTopShooterMotor();
     resetEncoders();
-    configControllers();
   }
 
-  private void configTopShooterMotor() {
-    topShooterMotor.restoreFactoryDefaults();
-    topShooterMotor.setSmartCurrentLimit(30);
-    topShooterMotor.setIdleMode(IdleMode.kCoast);
-    topShooterMotor.enableVoltageCompensation(12);
-    topShooterMotor.setInverted(true);
-    topShooterMotor.burnFlash();
-  }
-
-  private void configControllers(){
-    topController.setP(ShooterConstants.topkP);
-    topController.setI(ShooterConstants.topkI);
-    topController.setFF(ShooterConstants.topkFF);
-    topController.setOutputRange(-1, 1);
-  }
 
   @Override
   public void periodic() {
@@ -83,6 +68,30 @@ public class Elevator extends SubsystemBase {
     //elevatorController.setReference(getSetpoint(), ControlType.kPosition);
 
   }
+
+  public void resetEncoders()
+  {
+    elevatorEncoder.setPosition(0);
+  }
+
+  public double getInches()
+  {
+    double inches = Units.metersToInches(distanceFinder.get());
+    return inches;
+  }
+
+  public inchesToRotations(double inches)
+  {
+    //(29/32) in diameter
+    
+  }
+  
+  public double getDistance()
+  {
+    double inches = Units.inchesToRotations(90);
+    return inches;
+  }
+  
 
   /** Setpoint in meters / second */
   public void setSetpoint(double newMPS){

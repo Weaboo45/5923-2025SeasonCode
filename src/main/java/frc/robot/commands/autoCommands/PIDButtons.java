@@ -7,8 +7,8 @@ import java.util.function.Supplier;
 public class PIDButtons extends Command{
     private Supplier<Boolean> ampButton, shootButton;
     private ArmSubsystem armSub;
-    private YeetCannonPID shootSub;
-    public PIDButtons(ArmSubsystem armSub, YeetCannonPID shootSub,
+    private Elevator shootSub;
+    public PIDButtons(ArmSubsystem armSub, Elevator shootSub,
      Supplier<Boolean> ampButton, Supplier<Boolean> shootButton){
         addRequirements(armSub, shootSub);
         this.armSub = armSub;

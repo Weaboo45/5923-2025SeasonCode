@@ -74,7 +74,7 @@ public class RobotContainer {
   /// SUBSYSTEMS ///
   public static final SwerveDrivetrain drivetrain = new SwerveDrivetrain();
   public static final ArmSubsystem armSub = new ArmSubsystem();
-  public static final YeetCannonPID yeetSub = new YeetCannonPID();
+  public static final Elevator yeetSub = new Elevator();
 
   /// OI DEVICES / HARDWARE ///
   private final XboxController xbox = new XboxController(0);
@@ -177,26 +177,6 @@ public class RobotContainer {
    */
   private void configureBindings() {
     //ampScoring.whileTrue( new ParallelCommandGroup( new AutoIntake(scoreSub), new AutoShoot(scoreSub) ) );
-
-    //shooter disable
-    shooterOn.onTrue
-    (Commands.run(
-      ()-> {
-        yeetSub.intakeOff();
-      }, yeetSub));
-
-      //intake buttons
-    intakeFoward.whileTrue
-    (Commands.run(
-      ()-> {
-          yeetSub.intakeFoward();
-      }, yeetSub));
-
-    intakeBackward.whileTrue
-    (Commands.run(
-      ()-> {
-        yeetSub.intakeBackward();
-      }, yeetSub));
   }
 
     

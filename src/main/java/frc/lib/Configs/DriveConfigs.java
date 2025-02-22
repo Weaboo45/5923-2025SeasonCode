@@ -16,12 +16,12 @@ public final class DriveConfigs {
             // Use module constants to calculate conversion factors and feed forward gain.
             double drivingFactor = Constants.WHEEL_DIAMETER * Math.PI
                     / Constants.TURN_MOTOR_GEAR_RATIO;
-            double turningFactor = 2 * Math.PI;
+            double turningFactor = 2 * Math.PI; // radian conversion
             double drivingVelocityFeedForward = 1 / Constants.kFreeWheelSpeedRps;
 
             drivingConfig
                     .idleMode(IdleMode.kBrake)
-                    .smartCurrentLimit(50);
+                    .smartCurrentLimit(40);
             drivingConfig.encoder
                     .positionConversionFactor(drivingFactor) // meters
                     .velocityConversionFactor(drivingFactor / 60.0); // meters per second
@@ -34,7 +34,7 @@ public final class DriveConfigs {
 
             turningConfig
                     .idleMode(IdleMode.kBrake)
-                    .smartCurrentLimit(20);
+                    .smartCurrentLimit(40);
             turningConfig.absoluteEncoder
                     // Invert the turning encoder, since the output shaft rotates in the opposite
                     // direction of the steering motor in the MAXSwerve Module.

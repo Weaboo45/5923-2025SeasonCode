@@ -29,7 +29,7 @@ public class DriveSwerve extends Command {
 
   public DriveSwerve(SwerveDrivetrain drivetrain, Supplier<Double> yDirect, Supplier<Double> xDirect, 
   Supplier<Double> rotation, Supplier<Boolean> fieldTOrientated, Supplier<Boolean> resetGyro,
-  Supplier<Boolean> formX, Supplier<Boolean> rateLim) {
+  Supplier<Boolean> formX) {
     addRequirements(drivetrain);
     this.drivetrain = drivetrain;
     this.y = yDirect;
@@ -38,7 +38,6 @@ public class DriveSwerve extends Command {
     this.resetGyro = resetGyro;
     this.fieldTOrientated = fieldTOrientated; // toggle
     this.formX = formX;
-    this.rateLim = rateLim;
   }
 
 // Called when the command is initially scheduled.
@@ -57,7 +56,7 @@ public class DriveSwerve extends Command {
     }
 
     if(yesX){
-      drivetrain.drive(0, 0, 0, fieldDrive, onOff);
+      drivetrain.drive(0, 0, 0, fieldDrive);
       drivetrain.setX();
     }
 
@@ -82,7 +81,7 @@ public class DriveSwerve extends Command {
     double rotationVal = MathUtil.applyDeadband(z.get(), Constants.ROTATION_DEADBAND);
 
     drivetrain.drive(translationVal * speedMult, strafeVal * speedMult,
-      rotationVal * 4, fieldDrive, onOff);
+      rotationVal * 4, fieldDrive);
   }
 
   // Called once the command ends or is interrupted.

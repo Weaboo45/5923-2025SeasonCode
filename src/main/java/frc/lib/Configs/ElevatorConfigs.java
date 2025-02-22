@@ -8,19 +8,18 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 public final class ElevatorConfigs {
-    //SparkMax ElevatorMotor = new SparkMax(id???, MotorType.kBrushless);
     public static final SparkMaxConfig elevatorConfig = new SparkMaxConfig();
 
     static {
         elevatorConfig
-            .inverted(true)
-            .idleMode(IdleMode.kBrake);
-        elevatorConfig.encoder
-            .positionConversionFactor(1000)
-            .velocityConversionFactor(1000);
+            .inverted(false)
+            .idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(30)
+            .voltageCompensation(10);
+        
         elevatorConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(0.4, 0.0, 0.0);
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+            //.pid(0.4, 0.0, 0.0);
         
     }
 }

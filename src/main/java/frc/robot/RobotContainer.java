@@ -74,7 +74,7 @@ public class RobotContainer {
   /// SUBSYSTEMS ///
   public static final SwerveDrivetrain drivetrain = new SwerveDrivetrain();
   public static final ArmSubsystem armSub = new ArmSubsystem();
-  public static final Elevator yeetSub = new Elevator();
+  public static final ElevatorSubsystem yeetSub = new ElevatorSubsystem();
 
   /// OI DEVICES / HARDWARE ///
   private final XboxController xbox = new XboxController(0);
@@ -94,8 +94,8 @@ public class RobotContainer {
   /// COMMANDS ///
   // Xbox controls
   private final DriveSwerve drivetrainXbox = new DriveSwerve(drivetrain, ()-> -xbox.getLeftY(), ()-> xbox.getLeftX(), ()-> -xbox.getRightX(),
-   ()-> xbox.getRightBumperReleased(), ()-> xbox.getLeftBumper(), ()-> xbox.getXButtonPressed(), ()-> xbox.getBButtonPressed()); 
-  //    RB toggles field orintation         LB resets heading             forms X with wheels     enables the acceleration limit
+   ()-> xbox.getRightBumperReleased(), ()-> xbox.getLeftBumper(), ()-> xbox.getXButtonPressed()); 
+  //    RB toggles field orintation         LB resets heading             forms X with wheels
 
   // Joystick Controls
   private final DriveJoystickSwerve driveJoystick = new DriveJoystickSwerve(drivetrain, () -> stick.getY(), () -> stick.getX(), () -> stick.getTwist(),

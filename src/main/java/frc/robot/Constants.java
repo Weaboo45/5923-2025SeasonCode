@@ -23,6 +23,7 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
   public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
@@ -188,16 +189,17 @@ public final class Constants {
       public static final int leftClimberServoID = 9;
     }
 
-    public static final class ShooterConstants {
+    public static final class ElevatorConstants {
       //Shooter System IDs
-      public static final int topShooterMotorID = 12; //12
-      public static final int bottomShooterMotorID = 13; //13
-      public static final int intakeMotorID = 14; //14
+      public static final int elevatorMotorID = 12; //12
+
+      public static final double CapstanDiam = .90625; // inches
+      public static final double CapCirc = Math.PI * CapstanDiam;
 
       //PID values
-      public static final double topkP = 0.00015;
-      public static final double topkI = 0.0000007;
-      public static final double topkFF = 0.0002;
+      public static final double kP = 0.00015;
+      public static final double kI = 0.0000007;
+      public static final double kFF = 0.0002;
       //if needed bottom pid is the same vals
     }
 }

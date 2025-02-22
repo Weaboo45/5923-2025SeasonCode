@@ -67,7 +67,7 @@ public class DriveJoystickSwerve extends Command {
     }
 
     drivetrain.drive(-translationVal * mult, strafeVal * mult,
-      -rotationVal * 4, fieldDrive, false);
+      -rotationVal * 4, fieldDrive);
   }
 
   // Called once the command ends or is interrupted.

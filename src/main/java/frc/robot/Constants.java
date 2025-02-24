@@ -87,6 +87,7 @@ public final class Constants {
     }
 
     public static final int pidgeonID = 16;
+    public static final int intakeID = 17; // temporary
 
     // Amp limits
     public static int PEAK_LIMIT = 40;

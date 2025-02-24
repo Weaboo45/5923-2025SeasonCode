@@ -39,7 +39,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
 
-    Logger.recordMetadata("ProjectName", "5923-2024OffSeasonCode"); // Set a metadata value
+    Logger.recordMetadata("ProjectName", "2025SeasonCode"); // Set a metadata value
 
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
@@ -53,7 +53,7 @@ public class Robot extends LoggedRobot {
     }
 
   // Logger.disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
-  Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
+  //Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
     try {
           CameraServer.startAutomaticCapture();
@@ -98,7 +98,7 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();                                    //THIS IS THE ISSUE RIGHT HERE!!!!!!!!!!!!!!!!!
+    //m_autonomousCommand = m_robotContainer.getAutonomousCommand();                                    //THIS IS THE ISSUE RIGHT HERE!!!!!!!!!!!!!!!!!
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

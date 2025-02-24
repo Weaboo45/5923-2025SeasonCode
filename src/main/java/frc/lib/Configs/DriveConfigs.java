@@ -15,7 +15,7 @@ public final class DriveConfigs {
         static {
             // Use module constants to calculate conversion factors and feed forward gain.
             double drivingFactor = Constants.WHEEL_DIAMETER * Math.PI
-                    / Constants.TURN_MOTOR_GEAR_RATIO;
+                     / Constants.DRIVE_MOTOR_GEAR_RATIO;
             double turningFactor = 2 * Math.PI; // radian conversion
             double drivingVelocityFeedForward = 1 / Constants.kFreeWheelSpeedRps;
 
@@ -28,7 +28,7 @@ public final class DriveConfigs {
             drivingConfig.closedLoop
                     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                     // These are example gains you may need to them for your own robot!
-                    .pid(0.04, 0, 0)
+                    .pid(Constants.DRIVE_P, Constants.DRIVE_I, Constants.DRIVE_D)
                     .velocityFF(drivingVelocityFeedForward)
                     .outputRange(-1, 1);
 
@@ -39,11 +39,10 @@ public final class DriveConfigs {
                     // Invert the turning encoder, since the output shaft rotates in the opposite
                     // direction of the steering motor in the MAXSwerve Module.
                     .inverted(true) // false?
-                    .positionConversionFactor(turningFactor) // radians
-                    .velocityConversionFactor(turningFactor / 60.0); // radians per second
+                    .positionConversionFactor(turningFactor) // radians Constants.TURN_MOTOR_PCONVERSION
+                    .velocityConversionFactor(turningFactor/60); // radians per second
             turningConfig.closedLoop
-                    .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                    // These are example gains you may need to them for your own robot!
+                    .feedbackSensor(FeedbackSensor.kPrimaryEncoder) //kAbsoluteEncoder
                     .pid(Constants.ROTATE_P,
                     Constants.ROTATE_I,
                     Constants.ROTATE_D)

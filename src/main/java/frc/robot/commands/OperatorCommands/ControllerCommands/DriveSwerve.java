@@ -23,9 +23,8 @@ public class DriveSwerve extends Command {
 
   private SwerveDrivetrain drivetrain;
   private Supplier<Double>  y, x, z;
-  private Supplier<Boolean> fieldTOrientated, resetGyro, formX, rateLim;
+  private Supplier<Boolean> fieldTOrientated, resetGyro, formX;
   boolean fieldDrive = true, onOff = false, yesX = false;
-  double speed = 3.5, speedMult = 1.0;
 
   public DriveSwerve(SwerveDrivetrain drivetrain, Supplier<Double> yDirect, Supplier<Double> xDirect, 
   Supplier<Double> rotation, Supplier<Boolean> fieldTOrientated, Supplier<Boolean> resetGyro,
@@ -49,22 +48,15 @@ public class DriveSwerve extends Command {
   @Override
   public void execute() {
 
-    SmartDashboard.putNumber("Speed Multiplier", speedMult);
-
     if(formX.get()){
       yesX = !yesX;
     }
 
     if(yesX){
-      drivetrain.drive(0, 0, 0, fieldDrive);
+      //drivetrain.drive(0, 0, 0, fieldDrive);
       drivetrain.setX();
     }
 
-    if(rateLim.get()){
-      onOff = !onOff;
-    }
-
-    speedMult = SmartDashboard.getNumber("Speed Multiplier", 1);
 
     if(resetGyro.get()){
       drivetrain.zeroHeading();
@@ -80,8 +72,8 @@ public class DriveSwerve extends Command {
     double strafeVal = MathUtil.applyDeadband(x.get(), Constants.STRAFING_DEADBAND);
     double rotationVal = MathUtil.applyDeadband(z.get(), Constants.ROTATION_DEADBAND);
 
-    drivetrain.drive(translationVal * speedMult, strafeVal * speedMult,
-      rotationVal * 4, fieldDrive);
+    drivetrain.drive(strafeVal * 3, translationVal * 3,
+      rotationVal * 3, fieldDrive);
   }
 
   // Called once the command ends or is interrupted.

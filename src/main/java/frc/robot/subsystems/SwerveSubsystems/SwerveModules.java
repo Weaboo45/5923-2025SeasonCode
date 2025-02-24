@@ -7,6 +7,7 @@ package frc.robot.subsystems.SwerveSubsystems;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -24,11 +25,12 @@ import frc.lib.SwerveModuleConstants;
 import frc.lib.Configs.DriveConfigs;
 
 public class SwerveModules {
+
   private final SparkMax driveMotor;
   private final SparkMax turnMotor;
 
   private final RelativeEncoder driveEncoder;
-  private final RelativeEncoder turnEncoder;
+  //private final RelativeEncoder turnEncoder;
 
   private CANcoderConfiguration configs = new CANcoderConfiguration();
   private CANcoder absoluteEncoder;
@@ -54,7 +56,7 @@ public class SwerveModules {
 
     // Setup encoders and PID controllers for the driving and turning SPARKS MAX.
     driveEncoder = driveMotor.getEncoder();
-    turnEncoder = turnMotor.getEncoder();
+    //turnEncoder = turnMotor.getEncoder();
     
     drivePIDController = driveMotor.getClosedLoopController();
     turnPIDController = turnMotor.getClosedLoopController();
@@ -67,31 +69,13 @@ public class SwerveModules {
     turnMotor.configure(DriveConfigs.MAXSwerveModule.turningConfig, ResetMode.kResetSafeParameters,
       PersistMode.kPersistParameters);
 
-    resetToAbsolute();
+    //resetToAbsolute();
     m_chassisAngularOffset = 0;
-    m_desiredState.angle = Rotation2d.fromDegrees(absoluteEncoder.getPosition().getValueAsDouble()); //new Rotation2d(turnEncoder.getPosition())
-    //driveEncoder.setPosition(0);
+    m_desiredState.angle = new Rotation2d(absoluteEncoder.getPosition().getValueAsDouble()); //new Rotation2d(turnEncoder.getPosition())
+    driveEncoder.setPosition(0);
   }
 
-  private void configAngleEncoder() {
-    //configs.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-    //configs.MountPose.MagnetOffset = 0.26;
-    //configs.MountPose.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    absoluteEncoder.getConfigurator().apply(configs);
-    absoluteEncoder.getPosition().setUpdateFrequency(100);
-    absoluteEncoder.getVelocity().setUpdateFrequency(100);
-  }
-
-  public void resetToAbsolute() {
-    double absolutePosition = getCanCoder().getDegrees();
-    turnEncoder.setPosition(absolutePosition);
-  }
-
-  public Rotation2d getCanCoder() {
-    return Rotation2d.fromDegrees(absoluteEncoder.getPosition().getValueAsDouble());
-  }
-
-  /**
+   /**
    * Returns the current state of the module.
    *
    * @return The current state of the module.
@@ -100,7 +84,7 @@ public class SwerveModules {
     // Apply chassis angular offset to the encoder position to get the position
     // relative to the chassis.
     return new SwerveModuleState(driveEncoder.getVelocity(),
-        new Rotation2d(turnEncoder.getPosition() - m_chassisAngularOffset));
+        new Rotation2d(absoluteEncoder.getPosition().getValueAsDouble() - m_chassisAngularOffset));
   }
 
   /**
@@ -113,7 +97,7 @@ public class SwerveModules {
     // relative to the chassis.
     return new SwerveModulePosition(
         driveEncoder.getPosition(),
-        new Rotation2d(turnEncoder.getPosition() - m_chassisAngularOffset));
+        new Rotation2d(absoluteEncoder.getPosition().getValueAsDouble() - m_chassisAngularOffset));
   }
 
   /**
@@ -128,17 +112,39 @@ public class SwerveModules {
     correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
 
     // Optimize the reference state to avoid spinning further than 90 degrees.
-    correctedDesiredState.optimize(new Rotation2d(turnEncoder.getPosition()));
+    correctedDesiredState.optimize(new Rotation2d(absoluteEncoder.getPosition().getValueAsDouble())); //new Rotation2d(turnEncoder.getPosition)  getState().angle
 
     // Command driving and turning SPARKS MAX towards their respective setpoints.
     drivePIDController.setReference(correctedDesiredState.speedMetersPerSecond, SparkMax.ControlType.kVelocity);
-    turnPIDController.setReference(correctedDesiredState.angle.getRadians(), SparkMax.ControlType.kPosition);
+    turnPIDController.setReference(desiredState.angle.getDegrees(), SparkMax.ControlType.kPosition);
 
     m_desiredState = desiredState;
+    SmartDashboard.putNumber("Turn Setpoint", desiredState.angle.getDegrees());
   }
 
   /** Zeroes all the SwerveModule encoders. */
   public void resetEncoders() {
     driveEncoder.setPosition(0);
   }
+
+  private void configAngleEncoder() {
+    //configs.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+    //configs.MountPose.MagnetOffset = 0.26;
+    //configs.MountPose.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    absoluteEncoder.getConfigurator().apply(configs);
+    absoluteEncoder.getPosition().setUpdateFrequency(100);
+    absoluteEncoder.getVelocity().setUpdateFrequency(100);
+  }
+
+  /* 
+  public void resetToAbsolute() {
+    double absolutePosition = getCanCoder().getDegrees();
+    turnEncoder.setPosition(absolutePosition);
+  }
+    */
+
+  public Rotation2d getCanCoder() {
+    return Rotation2d.fromDegrees(absoluteEncoder.getPosition().getValueAsDouble());
+  }
+
 }

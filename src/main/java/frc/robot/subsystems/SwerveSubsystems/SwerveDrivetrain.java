@@ -13,13 +13,13 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 //import edu.wpi.first.util.WPIUtilJNI;
-import edu.wpi.first.wpilibj.DriverStation;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+//import com.pathplanner.lib.auto.AutoBuilder;
+//import com.pathplanner.lib.config.RobotConfig;
+//import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 
 import frc.robot.Constants;
 //import frc.lib.util.SwerveUtils;
@@ -40,7 +40,7 @@ public class SwerveDrivetrain extends SubsystemBase {
       3, Constants.Mod3.constants);
   
   // The gyro sensor
-  private final Pigeon2 m_gyro = new Pigeon2(11);
+  private final Pigeon2 m_gyro = new Pigeon2(Constants.pidgeonID);
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -58,6 +58,8 @@ public class SwerveDrivetrain extends SubsystemBase {
 
     // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
+
+    /*
     RobotConfig config;
     try{
       config = RobotConfig.fromGUISettings();
@@ -65,8 +67,10 @@ public class SwerveDrivetrain extends SubsystemBase {
       // Handle exception as needed
       e.printStackTrace();
     }
+    */
 
     // Configure AutoBuilder last
+    /* 
     AutoBuilder.configure(
         this::getPose, // Robot pose supplier
         this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -90,6 +94,7 @@ public class SwerveDrivetrain extends SubsystemBase {
           },
         this // Reference to this subsystem to set requirements
     );
+    */
   }
 
   @Override
@@ -229,8 +234,8 @@ public class SwerveDrivetrain extends SubsystemBase {
 
     m_frontLeft.setDesiredState(targetStates[0]);
     m_frontRight.setDesiredState(targetStates[1]);
-    m_rearLeft.setDesiredState(targetStates[2]);
-    m_rearRight.setDesiredState(targetStates[3]);
+    m_rearRight.setDesiredState(targetStates[2]);
+    m_rearLeft.setDesiredState(targetStates[3]);
   }
 
 

@@ -11,8 +11,9 @@ import edu.wpi.first.wpilibj.Joystick;
 
 import java.util.Map;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 //import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.auto.AutoBuilder;
+//import com.pathplanner.lib.auto.AutoBuilder;
 //import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -23,17 +24,17 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+//import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+//import edu.wpi.first.wpilibj2.command.Command;
+//import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.OperatorCommands.ControllerCommands.*;
 import frc.robot.commands.OperatorCommands.JoyStickCommands.*;
-import frc.robot.commands.autoCommands.PIDButtons;
-import frc.robot.subsystems.PIDSubsystems.*;
+//import frc.robot.commands.autoCommands.PIDButtons;
+//import frc.robot.subsystems.PIDSubsystems.*;
 import frc.robot.subsystems.SwerveSubsystems.SwerveDrivetrain;
 
 /**
@@ -51,11 +52,11 @@ public class RobotContainer {
   /*
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  private final SendableChooser<Command> m_chooser;
+  //private final SendableChooser<Command> m_chooser;
     //private final ScoreAmp scoreAmp = new ScoreAmp(scoreSub);
 
   public RobotContainer() {
-    m_chooser = AutoBuilder.buildAutoChooser();
+    //m_chooser = AutoBuilder.buildAutoChooser();
 
     configureInitialDefaultCommands();
     configureBindings();
@@ -64,7 +65,7 @@ public class RobotContainer {
 
     //NamedCommands.registerCommand("ScoreAmp", ampScore);
 
-    SmartDashboard.putData("Auto Mode", m_chooser);
+    //SmartDashboard.putData("Auto Mode", m_chooser);
   }
 
   // The robot's subsystems and commands are defined here...
@@ -73,14 +74,14 @@ public class RobotContainer {
 
   /// SUBSYSTEMS ///
   public static final SwerveDrivetrain drivetrain = new SwerveDrivetrain();
-  public static final ArmSubsystem armSub = new ArmSubsystem();
-  public static final ElevatorSubsystem yeetSub = new ElevatorSubsystem();
+  //public static final ArmSubsystem armSub = new ArmSubsystem();
+  //public static final ElevatorSubsystem yeetSub = new ElevatorSubsystem();
 
   /// OI DEVICES / HARDWARE ///
   private final XboxController xbox = new XboxController(0);
   private final Joystick stick = new Joystick(1);
 
-  //private static final AHRS ahrs = new AHRS(Port.kMXP);
+  private static final Pigeon2 gyro = new Pigeon2(Constants.pidgeonID);
 
   CommandXboxController commandXbox = new CommandXboxController(0);
 
@@ -93,15 +94,15 @@ public class RobotContainer {
 
   /// COMMANDS ///
   // Xbox controls
-  private final DriveSwerve drivetrainXbox = new DriveSwerve(drivetrain, ()-> -xbox.getLeftY(), ()-> xbox.getLeftX(), ()-> -xbox.getRightX(),
-   ()-> xbox.getRightBumperReleased(), ()-> xbox.getLeftBumper(), ()-> xbox.getXButtonPressed()); 
-  //    RB toggles field orintation         LB resets heading             forms X with wheels
+  private final DriveSwerve drivetrainXbox = new DriveSwerve(drivetrain, ()-> -xbox.getLeftX(), ()-> xbox.getLeftY(), ()-> -xbox.getRightX(),
+   ()-> xbox.getRightBumperButtonPressed(), ()-> xbox.getLeftBumperButtonPressed(), ()-> xbox.getXButtonPressed()); 
+  //    RB toggles field orintation         LB resets heading                       forms X with wheels
 
   // Joystick Controls
   private final DriveJoystickSwerve driveJoystick = new DriveJoystickSwerve(drivetrain, () -> stick.getY(), () -> stick.getX(), () -> stick.getTwist(),
    () -> stick.getRawButton(7), () -> stick.getRawButton(8), () -> stick.getThrottle());
 
-  private final PIDButtons buttons = new PIDButtons(armSub, yeetSub, ()-> stick.getRawButton(8), ()-> stick.getRawButton(7));
+  //private final PIDButtons buttons = new PIDButtons(armSub, yeetSub, ()-> stick.getRawButton(8), ()-> stick.getRawButton(7));
 
   /// SHUFFLEBOARD METHODS ///
   /**
@@ -122,11 +123,11 @@ public class RobotContainer {
     drivingStyleLayout.add("Joystick Drive",
     new InstantCommand(() -> drivetrain.setDefaultCommand(driveJoystick), drivetrain));
  
-    ShuffleboardLayout gyroSensor = m_tab.getLayout("NavX", BuiltInLayouts.kGrid)
+    ShuffleboardLayout gyroSensor = m_tab.getLayout("Pidgeon", BuiltInLayouts.kGrid)
     .withPosition(2, 0).withSize(1, 3)
     .withProperties(Map.of("label position", "BOTTOM"));
 
-    //gyroSensor.addNumber("Gyro", ()-> ahrs.getYaw()).withWidget(BuiltInWidgets.kGyro);
+    gyroSensor.addNumber("Gyro", ()-> gyro.getYaw().getValueAsDouble()).withWidget(BuiltInWidgets.kGyro);
 
     gyroSensor.add("Reset",
     new InstantCommand(()-> drivetrain.zeroHeading()));
@@ -166,8 +167,8 @@ public class RobotContainer {
    */
   private void configureInitialDefaultCommands() {
     drivetrain.setDefaultCommand(drivetrainXbox);
-    armSub.setDefaultCommand(buttons);
-    yeetSub.setDefaultCommand(buttons);
+    //armSub.setDefaultCommand(buttons);
+    //yeetSub.setDefaultCommand(buttons);
   }
   /**
    * Use this method to define your button->command mappings.  Buttons can be created by
@@ -194,7 +195,7 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  //public Command getAutonomousCommand() {
     // Executes the autonomous command chosen in smart dashboard
 
     // Load the path you want to follow using its name in the GUI
@@ -202,8 +203,8 @@ public class RobotContainer {
 
         // Create a path following command using AutoBuilder. This will also trigger event markers.
         //return AutoBuilder.followPath(path);
-    return m_chooser.getSelected();
-  }
+    //return m_chooser.getSelected();
+  //}
 
   public void displayValues() {
   SmartDashboard.putData(drivetrain);

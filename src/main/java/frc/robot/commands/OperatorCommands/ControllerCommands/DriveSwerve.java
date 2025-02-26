@@ -10,6 +10,8 @@ package frc.robot.commands.OperatorCommands.ControllerCommands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -23,12 +25,15 @@ public class DriveSwerve extends Command {
 
   private SwerveDrivetrain drivetrain;
   private Supplier<Double>  y, x, z;
-  private Supplier<Boolean> fieldTOrientated, resetGyro, formX;
-  boolean fieldDrive = true, onOff = false, yesX = false;
+  private Supplier<Boolean> fieldTOrientated, resetGyro;
+  boolean fieldDrive = true;//, onOff = false, yesX = false;
+
+  private SlewRateLimiter translationLimiter = new SlewRateLimiter(2.0);
+  private SlewRateLimiter strafeLimiter = new SlewRateLimiter(2.0);
+  private SlewRateLimiter rotationLimiter = new SlewRateLimiter(4.0);
 
   public DriveSwerve(SwerveDrivetrain drivetrain, Supplier<Double> yDirect, Supplier<Double> xDirect, 
-  Supplier<Double> rotation, Supplier<Boolean> fieldTOrientated, Supplier<Boolean> resetGyro,
-  Supplier<Boolean> formX) {
+  Supplier<Double> rotation, Supplier<Boolean> fieldTOrientated, Supplier<Boolean> resetGyro) { //Supplier<Boolean> formX
     addRequirements(drivetrain);
     this.drivetrain = drivetrain;
     this.y = yDirect;
@@ -36,7 +41,7 @@ public class DriveSwerve extends Command {
     this.z = rotation;
     this.resetGyro = resetGyro;
     this.fieldTOrientated = fieldTOrientated; // toggle
-    this.formX = formX;
+    //this.formX = formX;
   }
 
 // Called when the command is initially scheduled.
@@ -48,16 +53,6 @@ public class DriveSwerve extends Command {
   @Override
   public void execute() {
 
-    if(formX.get()){
-      yesX = !yesX;
-    }
-
-    if(yesX){
-      //drivetrain.drive(0, 0, 0, fieldDrive);
-      drivetrain.setX();
-    }
-
-
     if(resetGyro.get()){
       drivetrain.zeroHeading();
     }
@@ -68,12 +63,15 @@ public class DriveSwerve extends Command {
     }
 
     /* Get Values, Deadband */
-    double translationVal = MathUtil.applyDeadband(y.get(), Constants.SPEED_DEADBAND);
-    double strafeVal = MathUtil.applyDeadband(x.get(), Constants.STRAFING_DEADBAND);
-    double rotationVal = MathUtil.applyDeadband(z.get(), Constants.ROTATION_DEADBAND);
+    double translationVal = translationLimiter
+        .calculate(MathUtil.applyDeadband(y.get(), Constants.SPEED_DEADBAND));
+    double strafeVal = strafeLimiter
+        .calculate(MathUtil.applyDeadband(x.get(), Constants.STRAFING_DEADBAND));
+    double rotationVal = rotationLimiter
+        .calculate(MathUtil.applyDeadband(z.get(), Constants.ROTATION_DEADBAND));
 
-    drivetrain.drive(strafeVal * 3, translationVal * 3,
-      rotationVal * 3, fieldDrive);
+    drivetrain.swerveDrive( new Translation2d(translationVal * 3, strafeVal * 3), //3
+      rotationVal * 4, fieldDrive, false); //4
   }
 
   // Called once the command ends or is interrupted.

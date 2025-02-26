@@ -43,9 +43,9 @@ public final class Constants {
       public static final int driveMotorID = 2;
       public static final int angleMotorID = 1;
       public static final int canCoderID = 11;
-      public static final Rotation2d angleOffset = Rotation2d.fromRadians(-Math.PI / 2); //Rotation2d.fromDegrees(0)
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0); // Rotation2d.fromRadians(-Math.PI / 2); //Rotation2d.fromDegrees(0)
       public static final boolean driveMotorInverted = false;
-      public static final boolean angleMotorInverted = false;
+      public static final boolean angleMotorInverted = true;
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
           canCoderID, angleOffset, driveMotorInverted, angleMotorInverted);
     }
@@ -55,9 +55,9 @@ public final class Constants {
       public static final int driveMotorID = 4;
       public static final int angleMotorID = 3;
       public static final int canCoderID = 12;
-      public static final Rotation2d angleOffset = Rotation2d.fromRadians(0); //Rotation2d.fromDegrees(0)
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0); //Rotation2d.fromRadians(0); //Rotation2d.fromDegrees(0)
       public static final boolean driveMotorInverted = false;
-      public static final boolean angleMotorInverted = false;
+      public static final boolean angleMotorInverted = true;
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
           canCoderID, angleOffset, driveMotorInverted, angleMotorInverted);
     }
@@ -67,7 +67,7 @@ public final class Constants {
       public static final int driveMotorID = 6;
       public static final int angleMotorID = 5;
       public static final int canCoderID = 9;
-      public static final Rotation2d angleOffset = Rotation2d.fromRadians(Math.PI); //Rotation2d.fromDegrees(0)
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0); //Rotation2d.fromRadians(Math.PI); //Rotation2d.fromDegrees(0)
       public static final boolean driveMotorInverted = false;
       public static final boolean angleMotorInverted = false;
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
@@ -79,7 +79,7 @@ public final class Constants {
       public static final int driveMotorID = 8;
       public static final int angleMotorID = 7;
       public static final int canCoderID = 10;
-      public static final Rotation2d angleOffset = Rotation2d.fromRadians(Math.PI / 2); //Rotation2d.fromDegrees(0)
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0); // Rotation2d.fromRadians(Math.PI / 2); //Rotation2d.fromDegrees(0)
       public static final boolean driveMotorInverted = false;
       public static final boolean angleMotorInverted = false;
       public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
@@ -102,10 +102,10 @@ public final class Constants {
 
         //Swerve Kinematics
         public static SwerveDriveKinematics DRIVE_KIN = new SwerveDriveKinematics(
-            new Translation2d(CENTER_TO_WHEEL_X, CENTER_TO_WHEEL_Y),    //mod 0  - , +
-            new Translation2d(CENTER_TO_WHEEL_X, -CENTER_TO_WHEEL_Y),   //mod 1  - , -
-            new Translation2d(-CENTER_TO_WHEEL_X, CENTER_TO_WHEEL_Y),   //mod 2  + , -
-            new Translation2d(-CENTER_TO_WHEEL_X, -CENTER_TO_WHEEL_Y)); //mod 3  + , +
+            new Translation2d(-CENTER_TO_WHEEL_X, CENTER_TO_WHEEL_Y),    //mod 0  - , +
+            new Translation2d(-CENTER_TO_WHEEL_X, -CENTER_TO_WHEEL_Y),   //mod 1  - , -
+            new Translation2d(CENTER_TO_WHEEL_X, -CENTER_TO_WHEEL_Y),   //mod 2  + , -
+            new Translation2d(CENTER_TO_WHEEL_X, CENTER_TO_WHEEL_Y)); //mod 3  + , +
 
     // Drivetrain deadbands
     public static double ROTATION_DEADBAND = .25;   //.25
@@ -125,7 +125,7 @@ public final class Constants {
     public static final double kFreeWheelSpeedRps = (kFreeSpeedRpm * WHEEL_CIRCUMFERENCE) / DRIVE_MOTOR_GEAR_RATIO;
 
     public static final double DRIVE_MOTOR_PCONVERSION = WHEEL_DIAMETER * Math.PI / DRIVE_MOTOR_GEAR_RATIO;
-    public static final double TURN_MOTOR_PCONVERSION = 360/TURN_MOTOR_GEAR_RATIO; //360 / 2 * Math.PI  //in radians
+    public static final double TURN_MOTOR_PCONVERSION = (360/TURN_MOTOR_GEAR_RATIO); //360 / 2 * Math.PI  //in radians  TURN_MOTOR_GEAR_RATIO
 
     public static final double DRIVE_MOTOR_VCONVERSION = DRIVE_MOTOR_PCONVERSION / 60.0;
     public static final double TURN_MOTOR_VCONVERSION =  TURN_MOTOR_GEAR_RATIO / 60.0; // (2 * Math.PI) / 60.0 //in radians
@@ -139,7 +139,7 @@ public final class Constants {
 
         public static double ROTATE_P = .01; //.01
         public static double ROTATE_I = 0.00; //0.00
-        public static double ROTATE_D = 0; //.0005
+        public static double ROTATE_D = 0.000; //.0005
         public static double ROTATE_FF = 0.0;
 
     // Autonomous drivetrain PID

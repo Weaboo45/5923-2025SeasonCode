@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import java.util.Map;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-//import com.kauailabs.navx.frc.AHRS;
 //import com.pathplanner.lib.auto.AutoBuilder;
 //import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -45,15 +44,11 @@ import frc.robot.subsystems.SwerveSubsystems.SwerveDrivetrain;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
-  //ParallelCommandGroup ampScore = new ParallelCommandGroup(
-    //new AutoIntake(scoreSub), new AutoShoot(scoreSub));
   
   /*
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   //private final SendableChooser<Command> m_chooser;
-    //private final ScoreAmp scoreAmp = new ScoreAmp(scoreSub);
 
   public RobotContainer() {
     //m_chooser = AutoBuilder.buildAutoChooser();
@@ -62,8 +57,6 @@ public class RobotContainer {
     configureBindings();
     configureShuffleboardData();
     configureSmartDashboard();
-
-    //NamedCommands.registerCommand("ScoreAmp", ampScore);
 
     //SmartDashboard.putData("Auto Mode", m_chooser);
   }
@@ -85,17 +78,14 @@ public class RobotContainer {
 
   CommandXboxController commandXbox = new CommandXboxController(0);
 
-  //Joystick Button Commands
-  JoystickButton shooterOn = new JoystickButton(stick, 1);
-
   //intake buttons
   JoystickButton intakeFoward = new JoystickButton(stick, 2);
-  JoystickButton intakeBackward = new JoystickButton(stick, 3);
+  JoystickButton intakeOff = new JoystickButton(stick, 3);
 
   /// COMMANDS ///
   // Xbox controls
-  private final DriveSwerve drivetrainXbox = new DriveSwerve(drivetrain, ()-> -xbox.getLeftX(), ()-> xbox.getLeftY(), ()-> -xbox.getRightX(),
-   ()-> xbox.getRightBumperButtonPressed(), ()-> xbox.getLeftBumperButtonPressed(), ()-> xbox.getXButtonPressed()); 
+  private final DriveSwerve drivetrainXbox = new DriveSwerve(drivetrain, ()-> -xbox.getLeftY(), ()-> xbox.getLeftX(), ()-> -xbox.getRightX(),
+   ()-> xbox.getRightBumperButtonPressed(), ()-> xbox.getLeftBumperButtonPressed());//, ()-> xbox.getXButtonPressed()); 
   //    RB toggles field orintation         LB resets heading                       forms X with wheels
 
   // Joystick Controls
@@ -168,7 +158,6 @@ public class RobotContainer {
   private void configureInitialDefaultCommands() {
     drivetrain.setDefaultCommand(drivetrainXbox);
     //armSub.setDefaultCommand(buttons);
-    //yeetSub.setDefaultCommand(buttons);
   }
   /**
    * Use this method to define your button->command mappings.  Buttons can be created by
@@ -178,16 +167,6 @@ public class RobotContainer {
    */
   private void configureBindings() {
     //ampScoring.whileTrue( new ParallelCommandGroup( new AutoIntake(scoreSub), new AutoShoot(scoreSub) ) );
-  }
-
-    
-
-  /**
-   * Disables all ProfiledPIDSubsystem and PIDSubsystem instances. This should be called on robot
-   * disable to prevent integral windup.
-   */
-  public void disablePIDSubsystems() {
-    //armSub.disable();
   }
   
   /**

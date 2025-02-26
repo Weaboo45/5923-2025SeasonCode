@@ -21,7 +21,7 @@ public final class DriveConfigs {
 
             drivingConfig
                     .idleMode(IdleMode.kBrake)
-                    .smartCurrentLimit(40);
+                    .smartCurrentLimit(30);
             drivingConfig.encoder
                     .positionConversionFactor(drivingFactor) // meters
                     .velocityConversionFactor(drivingFactor / 60.0); // meters per second
@@ -34,15 +34,15 @@ public final class DriveConfigs {
 
             turningConfig
                     .idleMode(IdleMode.kBrake)
-                    .smartCurrentLimit(40);
-            turningConfig.absoluteEncoder
+                    .smartCurrentLimit(20);
+            turningConfig.encoder
                     // Invert the turning encoder, since the output shaft rotates in the opposite
                     // direction of the steering motor in the MAXSwerve Module.
-                    .inverted(true) // false?
-                    .positionConversionFactor(turningFactor) // radians Constants.TURN_MOTOR_PCONVERSION
+                    //.inverted(false) // true?
+                    .positionConversionFactor(turningFactor) // turningFactor radians Constants.TURN_MOTOR_PCONVERSION
                     .velocityConversionFactor(turningFactor/60); // radians per second
             turningConfig.closedLoop
-                    .feedbackSensor(FeedbackSensor.kPrimaryEncoder) //kAbsoluteEncoder
+                    .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder) //kAbsoluteEncoder
                     .pid(Constants.ROTATE_P,
                     Constants.ROTATE_I,
                     Constants.ROTATE_D)
@@ -52,7 +52,7 @@ public final class DriveConfigs {
                     // to 10 degrees will go through 0 rather than the other direction which is a
                     // longer route.
                     .positionWrappingEnabled(true)
-                    .positionWrappingInputRange(0, turningFactor);
+                    .positionWrappingInputRange(0, turningFactor); // turningFactor
         }
     }
 }

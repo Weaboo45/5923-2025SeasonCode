@@ -72,51 +72,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   private boolean lowSpeed;
 
-  /*
-  private static SwerveDrivetrain drivetrain = new SwerveDrivetrain();
-
-  public static SwerveDrivetrain getInstance(){
-    return drivetrain;
-  }
-  */
-
   public SwerveDrivetrain() {
-
-    //swerveModules = new SwerveModules[] {
-    //  new SwerveModules(0, Constants.Mod0.constants),
-    //  new SwerveModules(1, Constants.Mod1.constants),
-    //  new SwerveModules(2, Constants.Mod2.constants),
-    //  new SwerveModules(3, Constants.Mod3.constants)
-  //};
-
-    // Configure AutoBuilder
-    
-    /*//AutoBuilder.configureCustom(null, this::getPose, this::resetOdometry);
-    AutoBuilder.configureHolonomic(
-      this::getPose, 
-      this::resetOdometry, 
-      ()-> Constants.DRIVE_KIN.toChassisSpeeds(getModuleStates()), 
-      this::driveRobotRelative, 
-      Constants.pathFollowerConfig,
-      () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-      },
-      this);
-      */
-
-     // Set up custom logging to add the current path to a field 2d widget
-     //PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
-
-     //SmartDashboard.putData("Field", field);
-
 
   poseEstimator = new SwerveDrivePoseEstimator(Constants.DRIVE_KIN, getYaw(), getPositions(),
         new Pose2d());

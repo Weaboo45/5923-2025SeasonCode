@@ -47,8 +47,8 @@ public class SwerveModules {
   private double m_chassisAngularOffset = 0;
   //private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
-  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(
-      Constants.driveKS, Constants.driveKV, Constants.driveKA);
+  //private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(
+      //Constants.driveKS, Constants.driveKV, Constants.driveKA);
 
   /** Creates a new SwerveModule. */
   public SwerveModules(int moduleNumber, SwerveModuleConstants moduleConstants) {  //int turnMotorId, boolean driveMotorReversed, boolean turnMotorReversed, int absoluteEncoderId, double absoluteEncoderOffset, boolean absoluteEncoderReversed
@@ -73,6 +73,7 @@ public class SwerveModules {
       PersistMode.kPersistParameters);
 
     lastAngle = getState().angle;
+    resetToAbsolute();
   }
 
   public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
@@ -104,9 +105,9 @@ public class SwerveModules {
     } else {
       drivePIDController.setReference(
           desiredState.speedMetersPerSecond,
-          ControlType.kVelocity,
-          ClosedLoopSlot.kSlot0,
-          feedforward.calculate(desiredState.speedMetersPerSecond));
+          ControlType.kVelocity);//,
+          //ClosedLoopSlot.kSlot0,
+          //feedforward.calculate(desiredState.speedMetersPerSecond));
     }
   }
 

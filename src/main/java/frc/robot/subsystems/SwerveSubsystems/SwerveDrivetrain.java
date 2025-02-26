@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 //import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import java.text.DecimalFormat;
+//import java.text.DecimalFormat;
 
 //import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -66,7 +66,7 @@ public class SwerveDrivetrain extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
-  private Float rates[] = new Float[3];
+  //private Float rates[] = new Float[3];
   private SwerveDrivePoseEstimator poseEstimator;
   private Field2d field;
 
@@ -183,15 +183,11 @@ public class SwerveDrivetrain extends SubsystemBase {
 
     m_odometry.update(yawValue, getPositions());
 
-    //rates[0] = gyro.get;
-    //rates[1] = gyro.getRawGyroY();
-    //rates[2] = gyro.getRawGyroZ();
-
     field.setRobotPose(getPose());
   
     SmartDashboard.putNumber("Robot Angle", rawYawValue);
     SmartDashboard.putString("Pose", getPose().toString());
-    SmartDashboard.putString("Angular Speed", new DecimalFormat("#.00").format((rates[2] / 180)) + "pi rad/s");
+    //SmartDashboard.putString("Angular Speed", new DecimalFormat("#.00").format((rates[2] / 180)) + "pi rad/s");
 
     //Pose2d poseA = getPose();
     //Logger.recordOutput("Drivetrain/Robot Angle", getYaw().getRadians());

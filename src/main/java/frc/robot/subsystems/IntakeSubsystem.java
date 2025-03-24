@@ -1,37 +1,36 @@
 package frc.robot.subsystems;
 
+//import frc.lib.Configs.IntakeConfigs;
+import frc.lib.Configs.IntakeConfigs.IntakeConfig;
 import frc.robot.Constants;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+//import com.revrobotics.spark.config.SparkMaxConfig;
+//mport com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
-    private SparkMax intakeMotor;
 
-    private static SparkMaxConfig intakeConfig = new SparkMaxConfig();
+    public SparkMax intakeMotor;
+    
+    public IntakeSubsystem(){
 
-    public void SubsystemBase(){
         intakeMotor = new SparkMax(Constants.intakeID, MotorType.kBrushless);
-
-        configMotor();
+    
+        intakeMotor.configure(IntakeConfig.intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void configMotor(){
-        intakeConfig
-            .idleMode(IdleMode.kCoast)
-            .voltageCompensation(10)
-            .smartCurrentLimit(30);
-
-        intakeMotor.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    @Override
+    public void periodic(){
+        //SmartDashboard.putNumber("MotorSpeed", intakeMotor.get());
     }
 
-    public void outTake(){
-        intakeMotor.set(1);
+    public void intakeOn(){
+        intakeMotor.set(.5);
     }
 
     public void intakeOff(){

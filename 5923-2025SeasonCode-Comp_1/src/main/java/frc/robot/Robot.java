@@ -14,7 +14,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import edu.wpi.first.cameraserver.CameraServer;
+//import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -28,7 +28,7 @@ public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   //public static CTREConfigs ctreConfigs;
-  Thread visioThread;
+  //Thread visioThread;
 
   private RobotContainer m_robotContainer;
 
@@ -66,6 +66,8 @@ public class Robot extends LoggedRobot {
   // Logger.disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
   Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
+  
+  /*
     try {
           CameraServer.startAutomaticCapture();
           System.out.println("Connected to camera.");
@@ -73,6 +75,7 @@ public class Robot extends LoggedRobot {
       // TODO: handle exception
       System.out.println("An error ocurred when connecting to the camera. STACK: " + e.getStackTrace());
     }
+      */
 
   m_robotContainer = new RobotContainer();
   }

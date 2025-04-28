@@ -22,7 +22,7 @@ public final class DriveConfigs {
             drivingConfig
                     .idleMode(IdleMode.kBrake)
                     .voltageCompensation(12)
-                    .smartCurrentLimit(30);
+                    .smartCurrentLimit(40);
             drivingConfig.encoder
                     .positionConversionFactor(Constants.DRIVE_MOTOR_PCONVERSION) // meters
                     .velocityConversionFactor(Constants.DRIVE_MOTOR_VCONVERSION); // meters per second drivingFactor / 60.0
@@ -36,7 +36,7 @@ public final class DriveConfigs {
             turningConfig
                     .idleMode(IdleMode.kBrake)
                     .voltageCompensation(12)
-                    .smartCurrentLimit(20);
+                    .smartCurrentLimit(30);
             turningConfig.encoder
                     // Invert the turning encoder, since the output shaft rotates in the opposite
                     // direction of the steering motor in the MAXSwerve Module.

@@ -25,23 +25,23 @@ public class DriveSwerve extends Command {
 
   private SwerveSubsystem drivetrain;
   private Supplier<Double>  y, x, z;
-  private Supplier<Boolean> lowPower, highPower;//fieldTOrientated, resetGyro;
+  //private Supplier<Boolean> lowPower, highPower;//fieldTOrientated, resetGyro;
   boolean fieldDrive = true;
-  double speedMult = 2;
+  double speedMult = 3;
 
   private SlewRateLimiter yLimiter = new SlewRateLimiter(3.0);//2
   private SlewRateLimiter xLimiter = new SlewRateLimiter(3.0);//2
   private SlewRateLimiter rotationLimiter = new SlewRateLimiter(2.0);//4
 
   public DriveSwerve(SwerveSubsystem drivetrain, Supplier<Double> xDirect, Supplier<Double> yDirect, 
-  Supplier<Double> rotation, Supplier<Boolean> lowPower, Supplier<Boolean> highPower){ //, Supplier<Boolean> fieldTOrientated, Supplier<Boolean> resetGyro){ 
+  Supplier<Double> rotation){ //, Supplier<Boolean> lowPower, Supplier<Boolean> highPower){ //, Supplier<Boolean> fieldTOrientated, Supplier<Boolean> resetGyro){ 
     addRequirements(drivetrain);
     this.drivetrain = drivetrain;
     this.y = yDirect;
     this.x = xDirect;
     this.z = rotation;
-    this.lowPower = lowPower;
-    this.highPower = highPower;
+    //this.lowPower = lowPower;
+    //this.highPower = highPower;
     //this.resetGyro = resetGyro;
     //this.fieldTOrientated = fieldTOrientated; // toggle
   }
@@ -55,7 +55,7 @@ public class DriveSwerve extends Command {
   @Override
   public void execute() {
 
-    
+    /* 
     if(lowPower.get()){
       speedMult = 2; //.5
     }
@@ -63,6 +63,7 @@ public class DriveSwerve extends Command {
     if(highPower.get()){
       speedMult = 4.8; //3
     }
+    */
 
     /*
     SmartDashboard.putBoolean("Field Drive", fieldDrive);

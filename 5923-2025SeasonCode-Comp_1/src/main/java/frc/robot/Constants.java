@@ -92,7 +92,9 @@ public final class Constants {
     public static final int pidgeonID = 16;
     */
 
+    public static final int armID = 14;
     public static final int intakeID = 13; // temporary
+    public static final int climbID = 12;
 
     // Amp limits
     public static int PEAK_LIMIT = 40;
@@ -164,43 +166,24 @@ public final class Constants {
     public static final Translation2d MODULE_OFFSET = new Translation2d(CENTER_TO_WHEEL_X, CENTER_TO_WHEEL_Y);
 
     public static final class ArmConstants {
-      //Motor IDs
-      public static final int rightArmMotorID = 14;
-      public static final int leftArmMotorID = 15;
 
-      //Encoder ID
-      public static final int kEncoderPort = 0;
-    
       //Arm motor Conversion Factors
-      public static final double ARM_MOTOR_GEAR_RATIO = 0.1875; // needs to change
-      public static final double ARM_DIAMETER = Units.inchesToMeters(35); //needs to change
+      public static final double RevGearRatio = .01;
+      public static final double PullyGearRatio = .57142857142;
+      public static final double ARM_MOTOR_GEAR_RATIO = RevGearRatio * PullyGearRatio; // needs to change
+      public static final double ARM_DIAMETER = Units.inchesToMeters(36); //needs to change
 
       public static final double ARM_MOTOR_PCONVERSION = ARM_DIAMETER * Math.PI / ARM_MOTOR_GEAR_RATIO;
       public static final double ARM_MOTOR_VCONVERSION = ARM_MOTOR_PCONVERSION / 60;
 
       //PID values
-      public static final double kP = 0.05;
-      public static final double kI = 0.00;
-      public static final double kD = 0.05;
-      public static final double kF = 0.00;
+      public static final double kP = 0.05; //needs tuning
+      public static final double kI = 0.00; //needs tuning
+      public static final double kD = 0.05; //needs tuning
 
       //Button Setpoints in degrees
-      public static final double homePoint = 40;
-      public static final double apmPoint = 90;
+      public static final double homePoint = 0;
+
+      public static final double encoderOffset = 191; // 183
     }
-
-    public static final class ElevatorConstants {
-      //Shooter System IDs
-      public static final int elevatorMotorID = 12; //12
-
-      public static final double CapstanDiam = .90625; // inches
-      public static final double CapCirc = Math.PI * CapstanDiam;
-
-      //PID values
-      public static final double kP = 0.00015;
-      public static final double kI = 0.0000007;
-      public static final double kFF = 0.0002;
-      //if needed bottom pid is the same vals
-    }
-
 }

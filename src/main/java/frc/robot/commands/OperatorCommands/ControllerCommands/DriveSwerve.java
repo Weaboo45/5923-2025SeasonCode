@@ -10,10 +10,12 @@ package frc.robot.commands.OperatorCommands.ControllerCommands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.SwerveSubsystems.SwerveDrivetrain;
+import frc.robot.subsystems.SwerveSubsystems.SwerveSubsystem;
 
 
 public class DriveSwerve extends Command {
@@ -21,23 +23,27 @@ public class DriveSwerve extends Command {
    * Creates a new DriveMecanum.
    */
 
-  private SwerveDrivetrain drivetrain;
+  private SwerveSubsystem drivetrain;
   private Supplier<Double>  y, x, z;
-  private Supplier<Boolean> fieldTOrientated, resetGyro, formX, rateLim;
-  boolean fieldDrive = true, onOff = false, yesX = false;
-  double speed = 3.5, speedMult = 1.0;
+  //private Supplier<Boolean> lowPower, highPower;//fieldTOrientated, resetGyro;
+  boolean fieldDrive = true;
+  double speedMult = 3;
 
-  public DriveSwerve(SwerveDrivetrain drivetrain, Supplier<Double> yDirect, Supplier<Double> xDirect, 
-  Supplier<Double> rotation, Supplier<Boolean> fieldTOrientated, Supplier<Boolean> resetGyro,
-  Supplier<Boolean> formX) {
+  private SlewRateLimiter yLimiter = new SlewRateLimiter(3.0);//2
+  private SlewRateLimiter xLimiter = new SlewRateLimiter(3.0);//2
+  private SlewRateLimiter rotationLimiter = new SlewRateLimiter(2.0);//4
+
+  public DriveSwerve(SwerveSubsystem drivetrain, Supplier<Double> xDirect, Supplier<Double> yDirect, 
+  Supplier<Double> rotation){ //, Supplier<Boolean> lowPower, Supplier<Boolean> highPower){ //, Supplier<Boolean> fieldTOrientated, Supplier<Boolean> resetGyro){ 
     addRequirements(drivetrain);
     this.drivetrain = drivetrain;
     this.y = yDirect;
     this.x = xDirect;
     this.z = rotation;
-    this.resetGyro = resetGyro;
-    this.fieldTOrientated = fieldTOrientated; // toggle
-    this.formX = formX;
+    //this.lowPower = lowPower;
+    //this.highPower = highPower;
+    //this.resetGyro = resetGyro;
+    //this.fieldTOrientated = fieldTOrientated; // toggle
   }
 
 // Called when the command is initially scheduled.
@@ -49,39 +55,35 @@ public class DriveSwerve extends Command {
   @Override
   public void execute() {
 
-    SmartDashboard.putNumber("Speed Multiplier", speedMult);
-
-    if(formX.get()){
-      yesX = !yesX;
+    /* 
+    if(lowPower.get()){
+      speedMult = 2; //.5
     }
 
-    if(yesX){
-      drivetrain.drive(0, 0, 0, fieldDrive);
-      drivetrain.setX();
+    if(highPower.get()){
+      speedMult = 4.8; //3
     }
+    */
 
-    if(rateLim.get()){
-      onOff = !onOff;
-    }
-
-    speedMult = SmartDashboard.getNumber("Speed Multiplier", 1);
-
-    if(resetGyro.get()){
-      drivetrain.zeroHeading();
-    }
-
+    /*
     SmartDashboard.putBoolean("Field Drive", fieldDrive);
     if(fieldTOrientated.get()){
       fieldDrive = !fieldDrive;
     }
+      */
 
     /* Get Values, Deadband */
-    double translationVal = MathUtil.applyDeadband(y.get(), Constants.SPEED_DEADBAND);
-    double strafeVal = MathUtil.applyDeadband(x.get(), Constants.STRAFING_DEADBAND);
-    double rotationVal = MathUtil.applyDeadband(z.get(), Constants.ROTATION_DEADBAND);
+    double yVal = yLimiter
+        .calculate(MathUtil.applyDeadband(y.get(), Constants.SPEED_DEADBAND));
+    double xVal = xLimiter
+        .calculate(MathUtil.applyDeadband(x.get(), Constants.STRAFING_DEADBAND));
+    double rotationVal = rotationLimiter
+        .calculate(MathUtil.applyDeadband(z.get(), Constants.ROTATION_DEADBAND));
 
-    drivetrain.drive(translationVal * speedMult, strafeVal * speedMult,
-      rotationVal * 4, fieldDrive);
+
+    drivetrain.drive( new Translation2d(xVal * speedMult, yVal * speedMult) ,rotationVal * (speedMult + 1) , fieldDrive);
+
+    SmartDashboard.putNumber("Speed Mult", speedMult);
   }
 
   // Called once the command ends or is interrupted.

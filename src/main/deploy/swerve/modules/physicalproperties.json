@@ -1,0 +1,23 @@
+{
+  "optimalVoltage": 10,
+  "robotMass": 69,
+  "currentLimit": {
+    "drive": 40,
+    "angle": 30
+  },
+  "conversionFactors": {
+    "angle": {
+      "gearRatio": 21,
+      "factor": 16.8
+    },
+    "drive": {
+      "diameter": 4,
+      "gearRatio": 6.75,
+      "factor": 0.0429
+    }
+  },
+  "rampRate": {
+    "drive": 0.25,
+    "angle": 0.25
+  }
+}

@@ -14,8 +14,8 @@ import java.io.File;
 import java.util.Map;
 
 //import com.ctre.phoenix6.hardware.Pigeon2;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
+//import com.pathplanner.lib.auto.AutoBuilder;
+//import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -30,14 +30,15 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 //import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 //import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-//import frc.robot.commands.Autos.SimpleAuto;
+import frc.robot.commands.Autos.SimpleAuto;
 //import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.OperatorCommands.ControllerCommands.*;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ScoringSubsystem;
 //import frc.robot.commands.OperatorCommands.JoyStickCommands.*;
 //import frc.robot.commands.autoCommands.PIDButtons;
 //import frc.robot.subsystems.PIDSubsystems.*;
@@ -58,11 +59,11 @@ public class RobotContainer {
   /*
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  private final SendableChooser<Command> m_chooser;
-  //private final SendableChooser<Command> m_chooser = new SendableChooser<Command>();
+  //private final SendableChooser<Command> m_chooser;
+  private final SendableChooser<Command> m_chooser = new SendableChooser<Command>();
 
   public RobotContainer() {
-    m_chooser = AutoBuilder.buildAutoChooser();
+    //m_chooser = AutoBuilder.buildAutoChooser();
 
     configureInitialDefaultCommands();
     configureBindings();
@@ -81,7 +82,7 @@ public class RobotContainer {
 File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");
  private final SwerveSubsystem drivetrain = new SwerveSubsystem(swerveJsonDirectory);
 
-  public static final IntakeSubsystem intakeSub = new IntakeSubsystem();
+  public static final ScoringSubsystem scoreSub = new ScoringSubsystem();
   //public static final ArmSubsystem armSub = new ArmSubsystem();
   //public static final ElevatorSubsystem yeetSub = new ElevatorSubsystem();
 
@@ -101,10 +102,10 @@ File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");
 
   /// COMMANDS ///
   // Xbox controls
-  private final DriveSwerve drivetrainXbox = new DriveSwerve(drivetrain, ()-> -xbox.getLeftY(), ()-> -xbox.getLeftX(), ()-> xbox.getRightX(),
-    ()-> xbox.getLeftBumperButtonPressed(), ()-> xbox.getRightBumperButtonPressed());  //, ()-> xbox.getXButtonPressed()); 
-  //    RB low power                         LB high power                       forms X with wheels
-
+  private final DriveSwerve drivetrainXbox = new DriveSwerve(drivetrain, ()-> -xbox.getLeftY(), ()-> -xbox.getLeftX(), ()-> xbox.getRightX()); //,
+    //()-> xbox.getXButton(), ()-> xbox.getYButton());  //, ()-> xbox.getXButtonPressed()); 
+  //     low power                          high power                       forms X with wheels
+  // getLeftBumperButtonPressed()
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
    */
@@ -133,7 +134,10 @@ File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");
 
   //private final DriveSwerve drivePS = new DriveSwerve(drivetrain, ()-> -psCon.getLeftX(), ()-> psCon.getLeftY(), ()-> -psCon.getRightX()); 
 
-  private final Intake operateIntake = new Intake(intakeSub, ()-> xbox.getAButton());
+  private final ScoringComand operateScoring = new ScoringComand(scoreSub, ()-> xbox.getAButton(), ()-> xbox.getXButton(),
+      ()-> xbox.getLeftTriggerAxis(), ()-> xbox.getRightTriggerAxis(), //controls climber
+      ()-> xbox.getLeftBumperButton(), ()-> xbox.getRightBumperButton()); //controls arm
+      
   //private final Intake psIntake = new Intake(intakeSub, ()-> psCon.getCrossButton());
 
   // Joystick Controls
@@ -143,7 +147,7 @@ File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");
   //private final PIDButtons buttons = new PIDButtons(armSub, yeetSub, ()-> stick.getRawButton(8), ()-> stick.getRawButton(7));
 
   // Autos
-  //private final SimpleAuto simpleAuto = new SimpleAuto(intakeSub, drivetrain);
+  private final SimpleAuto simpleAuto = new SimpleAuto(scoreSub, drivetrain);
   /// SHUFFLEBOARD METHODS ///
   /**
    * Use this command to define {@link Shuffleboard} buttons using a
@@ -161,8 +165,8 @@ File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");
     //drivingStyleLayout.add("Xbox Drive",
     //new InstantCommand(() -> drivetrain.setDefaultCommand(drivetrainXbox), drivetrain));
 
-    drivingStyleLayout.add("Xbox Intake",
-    new InstantCommand(() -> intakeSub.setDefaultCommand(operateIntake), intakeSub));
+    drivingStyleLayout.add("Xbox Scoring Mech",
+    new InstantCommand(() -> scoreSub.setDefaultCommand(operateScoring), scoreSub));
 
     //PS5 controller commands
     //drivingStyleLayout.add("PS5 Drive",
@@ -182,7 +186,6 @@ File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");
     gyroSensor.addNumber("Robot Speed", ()-> drivetrain.getRobotSpeed());
     gyroSensor.addNumber("Robot Xvelo", ()-> drivetrain.getXVelo());
     gyroSensor.addNumber("Robot Yvelo", ()-> drivetrain.getYVelo());
-    
     //gyroSensor.add("Reset",
     //new InstantCommand(()-> drivetrain.zeroHeading()));
 
@@ -224,10 +227,11 @@ File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");
 
   private void configureSmartDashboard(){
     //match Auto
-    m_chooser.setDefaultOption("Test Auto", new PathPlannerAuto("Test Auto"));
-    m_chooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
-    m_chooser.addOption("ZZ Auto", new PathPlannerAuto("ZZ Auto"));
-    m_chooser.addOption("Curve Auto", new PathPlannerAuto("Curve Auto"));
+    //m_chooser.setDefaultOption("Test Auto", new PathPlannerAuto("Test Auto"));
+    //m_chooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
+    //m_chooser.addOption("ZZ Auto", new PathPlannerAuto("ZZ Auto"));
+    //m_chooser.addOption("Curve Auto", new PathPlannerAuto("Curve Auto"));
+    m_chooser.setDefaultOption("Simple Auto", simpleAuto);
   }
 
   /**   
@@ -235,7 +239,7 @@ File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");
    * Default commands are ran whenever no other commands are using a specific subsystem.
    */
   private void configureInitialDefaultCommands() {
-    intakeSub.setDefaultCommand(operateIntake);
+    scoreSub.setDefaultCommand(operateScoring);
     drivetrain.setDefaultCommand(drivetrainXbox);
     //intakeSub.setDefaultCommand(psIntake);
   }
@@ -266,13 +270,12 @@ File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");
       }, intakeSub));
       */
 
-      /* 
-      commandController.b().onTrue(
+      commandController.start().onTrue(
         Commands.runOnce(
           ()->{ 
             drivetrain.zeroGyro();
           }, drivetrain));
-          */ 
+          
   }
   
   /**

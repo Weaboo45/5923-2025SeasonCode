@@ -30,7 +30,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void intakeOn(){
-        intakeMotor.set(.5);
+        intakeMotor.set(.5); // m/s
     }
 
     public void intakeOff(){

@@ -4,9 +4,7 @@ import frc.lib.Configs.IntakeConfigs.*;
 import frc.robot.Constants;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -18,15 +16,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ScoringSubsystem extends SubsystemBase {
-
-    double setpoint = 45;
-    double maxAngle = 75, minAngle = 3;
-    double kP = 0, kI = 0, kD = 0;
     
     public SparkFlex intakeMotor;
     public SparkMax climbMotor, armMotor;
-
-    public SparkClosedLoopController armPID;
 
     public RelativeEncoder armEncoder;
 
@@ -49,11 +41,6 @@ public class ScoringSubsystem extends SubsystemBase {
 
         armEncoder = armMotor.getEncoder();
 
-        armPID = armMotor.getClosedLoopController();
-
-        // Setpoint Val
-        SmartDashboard.putNumber("Arm Setpoint", getSetpoint());
-
         resetArmEncoder();
     }
 
@@ -62,20 +49,7 @@ public class ScoringSubsystem extends SubsystemBase {
         resetArmEncoder();
 
         SmartDashboard.putNumber("Arm Angle", getArmAngle().getDegrees());
-        SmartDashboard.putNumber("Arm Rotations", armEncoder.getPosition());
-
-        SmartDashboard.putNumber("Arm Error", getArmError());
-        SmartDashboard.getNumber("Arm Setpoint", getSetpoint());
-
-        //Changable PID vals from dashboard
-        /*Left for example purposes */
-        double newSet = SmartDashboard.getNumber("Arm Setpoint", Constants.ArmConstants.homePoint);
-        if(newSet != getSetpoint()){  setSetpoint(newSet); }
-
-        if(setpoint < 1){ setpoint = 1;}
-
-        double correctSetpoint = rotSetpoint(setpoint);
-        armPID.setReference(correctSetpoint, ControlType.kPosition);
+        //SmartDashboard.putNumber("Arm Rotations", armEncoder.getPosition());
     }
 
     /**outtakes coral .25 */
@@ -150,23 +124,5 @@ public class ScoringSubsystem extends SubsystemBase {
     public Rotation2d getArmAngle(){
         Rotation2d armAngle = Rotation2d.fromRotations(absoluteEncoder.get() - (Constants.ArmConstants.encoderOffset / 360));
         return armAngle;
-    }
-
-    //Methods for PID
-    public double getArmError(){
-        return getSetpoint() - getArmAngle().getDegrees();
-    }
-
-    /**The new arm set point in degrees */
-    public void setSetpoint(double newPoint){
-        setpoint = newPoint;
-    }
-
-    public double rotSetpoint(double set){
-        return set / 360;
-    }
-
-    public double getSetpoint(){
-        return setpoint;
     }
 }

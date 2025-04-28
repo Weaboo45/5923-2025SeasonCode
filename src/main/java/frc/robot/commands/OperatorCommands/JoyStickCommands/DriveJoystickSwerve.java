@@ -5,39 +5,37 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.OperatorCommands.ControllerCommands;
+package frc.robot.commands.OperatorCommands.JoyStickCommands;
 
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystems.SwerveDrivetrain;
 
 
-public class DriveSwerve extends Command {
+public class DriveJoystickSwerve extends Command {
   /*
    * Creates a new DriveMecanum.
    */
 
   private SwerveDrivetrain drivetrain;
-  private Supplier<Double>  y, x, z;
-  private Supplier<Boolean> fieldTOrientated, resetGyro, formX, rateLim;
-  boolean fieldDrive = true, onOff = false, yesX = false;
-  double speed = 3.5, speedMult = 1.0;
+  private Supplier<Double>  y, x, z, multiplier;
+  private Supplier<Boolean> fieldTOrientated, zeroHeading;
+  boolean fieldDrive = true, onOff = false;
 
-  public DriveSwerve(SwerveDrivetrain drivetrain, Supplier<Double> yDirect, Supplier<Double> xDirect, 
-  Supplier<Double> rotation, Supplier<Boolean> fieldTOrientated, Supplier<Boolean> resetGyro,
-  Supplier<Boolean> formX) {
+
+  public DriveJoystickSwerve(SwerveDrivetrain drivetrain, Supplier<Double> yDirect, Supplier<Double> xDirect, 
+  Supplier<Double> rotation, Supplier<Boolean> fieldTOrientated, Supplier<Boolean> zeroHeading, Supplier<Double> multiplier) {
     addRequirements(drivetrain);
     this.drivetrain = drivetrain;
+    this.zeroHeading = zeroHeading;
     this.y = yDirect;
     this.x = xDirect;
     this.z = rotation;
-    this.resetGyro = resetGyro;
+    this.multiplier = multiplier;
     this.fieldTOrientated = fieldTOrientated; // toggle
-    this.formX = formX;
   }
 
 // Called when the command is initially scheduled.
@@ -49,45 +47,32 @@ public class DriveSwerve extends Command {
   @Override
   public void execute() {
 
-    SmartDashboard.putNumber("Speed Multiplier", speedMult);
-
-    if(formX.get()){
-      yesX = !yesX;
-    }
-
-    if(yesX){
-      drivetrain.drive(0, 0, 0, fieldDrive);
-      drivetrain.setX();
-    }
-
-    if(rateLim.get()){
-      onOff = !onOff;
-    }
-
-    speedMult = SmartDashboard.getNumber("Speed Multiplier", 1);
-
-    if(resetGyro.get()){
+    if(zeroHeading.get()){
       drivetrain.zeroHeading();
     }
 
-    SmartDashboard.putBoolean("Field Drive", fieldDrive);
-    if(fieldTOrientated.get()){
-      fieldDrive = !fieldDrive;
+    double mult = -multiplier.get() * 2 + 3; //trying to make -1 to 1 turn to 1 to 4
+    if(mult > 4){
+      mult = 4;
     }
+    
 
     /* Get Values, Deadband */
     double translationVal = MathUtil.applyDeadband(y.get(), Constants.SPEED_DEADBAND);
     double strafeVal = MathUtil.applyDeadband(x.get(), Constants.STRAFING_DEADBAND);
     double rotationVal = MathUtil.applyDeadband(z.get(), Constants.ROTATION_DEADBAND);
 
-    drivetrain.drive(translationVal * speedMult, strafeVal * speedMult,
-      rotationVal * 4, fieldDrive);
+    if(fieldTOrientated.get()){
+      fieldDrive = !fieldDrive;
+    }
+
+    drivetrain.drive(-translationVal * mult, strafeVal * mult,
+      -rotationVal * 4, fieldDrive);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    //drivetrain.stopModules();
+  public void end(boolean interrupted) {;
   }
 
   // Returns true when the command should end.
